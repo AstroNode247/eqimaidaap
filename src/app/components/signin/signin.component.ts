@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-signin',
+  selector: 'eq-signin',
   templateUrl: './signin.component.html',
   styleUrls: ['./signin.component.css']
 })

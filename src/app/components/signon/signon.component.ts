@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-signon',
+  selector: 'eq-signon',
   templateUrl: './signon.component.html',
   styleUrls: ['./signon.component.css']
 })
