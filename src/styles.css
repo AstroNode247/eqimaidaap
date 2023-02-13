@@ -40,6 +40,11 @@ body {
     overflow-x: hidden;
 }
 
+a {
+    text-decoration: none;
+    color: var(--color-black);
+}
+
 /* GENERAL STYLES */
 .container {
     width: 80%;
@@ -49,6 +54,10 @@ body {
 img {
     display: block;
     width: 100%;
+}
+
+.danger-txt {
+    color: var(--color-danger);
 }
 
 .btn {
@@ -68,6 +77,11 @@ img {
 .btn-primary {
     background: var(--color-primary);
     color: white;
+}
+
+.btn[disabled] {
+    opacity: 0.6;
+    cursor: auto;
 }
 
 .btn-secondary {
@@ -91,14 +105,14 @@ img {
 }
 
 .title-card i {
-    font-size: 1.6rem;
+    font-size: 1.3rem;
     color: var(--color-gray);
     position: relative;
 }
 
 .title-card h2 {
-    font-size: 1.5rem;
-    margin-left: 1.2rem;
+    font-size: 1.4rem;
+    margin-left: 1rem;
 }
 
 /*================== NAVBAR ==================*/
@@ -239,6 +253,12 @@ main .container .left {
     text-align: center;
 }
 
+.middle .user-card p {
+    margin: 1.2rem 0;
+    font-size: 0.9rem;
+    text-align: left;
+}
+
 .middle .user-card .data {
     display: flex;
     justify-content: space-around;
@@ -274,7 +294,7 @@ main .container .left {
     border-radius: var(--card-border-radius);
     padding: var(--card-padding);
     margin: 1rem 0;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     line-height: 1.5;
 }
 
@@ -286,7 +306,7 @@ main .container .left {
 }
 
 .right .fingerprint .user span {
-    font-size: 2rem;
+    font-size: 1.7rem;
     color: var(--color-gray);
 }
 
@@ -298,7 +318,7 @@ main .container .left {
 .right .fingerprint .fingerprint-img {
     border-radius: var(--card-border-radius);
     overflow: hidden;
-    margin: -0.1rem 0;
+    /* margin: rem 0; */
     width: 15rem;
     height: 15rem;
 }

@@ -8,6 +8,8 @@ import { HeaderComponent } from './components/header/header.component';
 import { HomeComponent } from './components/home/home.component';
 import { SigninComponent } from './components/signin/signin.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { SignonComponent } from './components/signon/signon.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -16,11 +18,13 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
     SidebarComponent,
     SigninComponent,
     HomeComponent,
-    FingerprintComponent
+    FingerprintComponent,
+    SignonComponent,
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

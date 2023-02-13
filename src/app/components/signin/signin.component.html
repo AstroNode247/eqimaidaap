@@ -3,13 +3,14 @@
         <i class="uil uil-keyhole-circle"></i>
         <h2>Identifiant</h2>
     </div>
-    <form class="input-form">
+    <form class="input-form" #searchForm="ngForm" (ngSubmit)="findUser()">
         <div class="input-field">
             <i class="uil uil-search"></i>
-            <input type="text" placeholder="Search for user biometrics authentication">
+            <input required type="text" placeholder="* Chercher par id, matricule, etc"
+            name="id" [(ngModel)]="id">
         </div>
         <div class="input-validation">
-            <input type="submit" value="Enregistrer" class="btn btn-primary">
+            <button [disabled]="searchForm.invalid" type="submit" class="btn btn-primary">Rechercher</button>
         </div>
     </form>
 </div>
@@ -20,7 +21,7 @@
             <i class="uil uil-info-circle"></i>
             <h2>Information</h2>
         </div>
-        <div class="details">
+        <div>
             <h2>19300827</h2>
         </div>
     </div>
