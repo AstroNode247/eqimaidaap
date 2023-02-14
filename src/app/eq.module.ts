@@ -10,6 +10,7 @@ import { SigninComponent } from './components/signin/signin.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { SignonComponent } from './components/signon/signon.component';
 import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { FormsModule } from '@angular/forms';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule
+    FormsModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

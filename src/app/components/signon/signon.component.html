@@ -1,34 +1,60 @@
-<div class="form-card">
-    <div class="title-card">
-        <i class="uil uil-keyhole-circle"></i>
-        <h2>Inscription</h2>
-    </div>
-    <form class="input-form" (ngSubmit)="registerUser()" #registerForm="ngForm">
-        <div class="input-field">
-            <i class="uil uil-search"></i>
-            <input type="text" placeholder="* Indentifiant exe : Matricule, Id, etc" required="" name="id"
-                [(ngModel)]="id">
-        </div>
-        <div class="input-validation">
-            <button [disabled]="registerForm.invalid" type="submit" class="btn btn-primary">Inscrire</button>
-        </div>
-    </form>
-</div>
-
-<div class="user-card">
-    <div class="header">
+<ng-container *ngIf="(appState$ | async) as appState">
+    <div class="form-card">
         <div class="title-card">
-            <i class="uil uil-info-circle"></i>
-            <h2>Empreintes</h2>
+            <i class="uil uil-keyhole-circle"></i>
+            <h2>Inscription</h2>
         </div>
-        <div>
-            <h2>19300827</h2>
+        <form class="input-form" (ngSubmit)="registerUser()" #registerForm="ngForm">
+            <div class="input-field">
+                <i class="uil uil-search"></i>
+                <input type="text" placeholder="* Indentifiant exe : Matricule, Id, etc" required name="uid"
+                    [(ngModel)]="user.uid">
+            </div>
+            <div class="input-validation">
+                <button [disabled]="registerForm.invalid || (isLoading$ | async)" type="submit" class="btn btn-primary">
+                    <span *ngIf="isLoading$ | async">Enregistrement...</span>
+                    <span *ngIf="!(isLoading$ | async)">Inscription</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <ng-container *ngIf="isLoading$ | async">
+        <div class="spinner">
+            <div class="lds-spinner">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
         </div>
-    </div>
-    <p>Utiliser le logiciel <b>Eqimaid</b> pour que le système capture l'empreinte.
-        Le système numérisera ensuite votre empreinte et enregistrera les données.</p>
-    <div class="action-button">
-        <button class="btn btn-primary">Visualiser</button>
-        <button class="btn btn-secondary">Ajouter</button>
-    </div>
-</div>
+    </ng-container>
+
+    <ng-container *ngIf="hasRegistered$ | async">
+        <div class="user-card">
+            <div class="header">
+                <div class="title-card">
+                    <i class="uil uil-info-circle"></i>
+                    <h2>Empreintes</h2>
+                </div>
+                <div>
+                    <h2>{{user_info}}</h2>
+                </div>
+            </div>
+            <p>Utiliser le logiciel <b>Eqimaid</b> pour que le système capture l'empreinte.
+                Le système numérisera ensuite votre empreinte et enregistrera les données.</p>
+            <div class="action-button">
+                <button class="btn btn-primary">Visualiser</button>
+                <button class="btn btn-secondary">Ajouter</button>
+            </div>
+        </div>
+    </ng-container>
+</ng-container>

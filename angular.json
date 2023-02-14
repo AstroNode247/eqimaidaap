@@ -64,6 +64,7 @@
             },
             "development": {
               "browserTarget": "eqimaidapp:build:development"
+              // "proxyConfig": "src/proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"
