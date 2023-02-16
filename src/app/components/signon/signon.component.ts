@@ -15,7 +15,7 @@ import { UserService } from 'src/app/service/user.service';
 export class SignonComponent implements OnInit {
   user: User = { uid: null };
   user_info?: number | null;
-  appState$?: Observable<AppState<CustomResponse|null>>;
+  appState$?: Observable<AppState<CustomResponse | null>>;
   private dataSubject = new BehaviorSubject<CustomResponse | null>(null);
 
   private hasRegistered = new BehaviorSubject<boolean>(false);
@@ -24,10 +24,10 @@ export class SignonComponent implements OnInit {
   private isLoading = new BehaviorSubject<boolean>(false);
   isLoading$ = this.isLoading.asObservable();
 
-
   readonly DataState = DataState;
 
   constructor(private userService: UserService) { }
+
 
   ngOnInit(): void {
     this.appState$ = this.userService.users$
@@ -39,8 +39,10 @@ export class SignonComponent implements OnInit {
         catchError((error: string) => {
           return of({ dataState: DataState.ERROR, error })
         })
-      );
+      )
   }
+
+
 
   registerUser() {
     this.isLoading.next(true);
@@ -55,11 +57,28 @@ export class SignonComponent implements OnInit {
           this.user_info = this.user.uid;
           return { dataState: DataState.LOADED, appData: this.dataSubject.value }
         }),
-        startWith({ dataState: DataState.LOADED,  appData: this.dataSubject.value}),
+        startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
         catchError((error: string) => {
           this.isLoading.next(false);
           return of({ dataState: DataState.ERROR, error })
         })
       )
+  }
+
+  onAddFingerprint() {
+    this.appState$ = this.userService.addFingerprint$(this.user.uid!)
+      .pipe(
+        map(response => {
+          this.dataSubject.next(
+            { ...response, data: { fingerprints: [response.data.fingerprint, 
+              this.dataSubject.value?.data.fingerprints] } }
+          );
+          return { dataState: DataState.LOADED, appData: this.dataSubject.value }
+            }),
+          startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
+          catchError((error: string) => {
+            return of({ dataState: DataState.ERROR, error });
+          })
+      );
   }
 }
