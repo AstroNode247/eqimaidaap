@@ -5,12 +5,13 @@ import { AppRoutingModule } from './eq-routing.module';
 import { AppComponent } from './eq.component';
 import { FingerprintComponent } from './components/fingerprint/fingerprint.component';
 import { HeaderComponent } from './components/header/header.component';
-import { HomeComponent } from './components/home/home.component';
-import { SigninComponent } from './components/signin/signin.component';
+import { HomeComponent } from './pages/home/home.component';
+import { SigninComponent } from './pages/signin/signin.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
-import { SignonComponent } from './components/signon/signon.component';
+import { SignonComponent } from './pages/signon/signon.component';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { LoadingComponent } from './components/loading/loading.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { HttpClientModule } from '@angular/common/http';
     HomeComponent,
     FingerprintComponent,
     SignonComponent,
+    LoadingComponent,
   ],
   imports: [
     BrowserModule,

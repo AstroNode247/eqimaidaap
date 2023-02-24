@@ -2,7 +2,7 @@ import { Fingerprint } from "./fingerprint";
 
 export interface User {
     id?: number;
-    uid: number | null;
+    uid: string | null;
     firstName?: string;
     lastName?: string;
     entity?: string;

@@ -1,4 +1,5 @@
 export interface Fingerprint {
-    id: number;
-    path: string;
+    id?: number;
+    name?: string;
+    path?: string;
 }

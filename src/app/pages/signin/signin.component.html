@@ -1,0 +1,44 @@
+<ng-container *ngIf="(appState$ | async) && (fingerState$ | async)">
+    <div class="form-card">
+        <div class="title-card">
+            <i class="uil uil-keyhole-circle"></i>
+            <h2>Identifiant</h2>
+        </div>
+        <form class="input-form" #searchForm="ngForm" (ngSubmit)="findUser()">
+            <div class="input-field">
+                <i class="uil uil-search"></i>
+                <input required type="text" placeholder="* Chercher par id, matricule, etc" name="uid"
+                    [(ngModel)]="user_info">
+            </div>
+            <div class="input-validation">
+                <button [disabled]="searchForm.invalid" type="submit" class="btn btn-primary">Rechercher</button>
+            </div>
+        </form>
+    </div>
+    <ng-container *ngIf="showLoader$ | async">
+        <eq-loading></eq-loading>
+    </ng-container>
+
+    <ng-container *ngIf="hasSearched$ | async">
+        <div class="user-card">
+            <div class="header">
+                <div class="title-card">
+                    <i class="uil uil-info-circle"></i>
+                    <h2>Information</h2>
+                </div>
+                <div>
+                    <h2>{{ user!.uid }}</h2>
+                </div>
+            </div>
+            <div class="data">
+                <h3>10<br><span>Empreintes</span></h3>
+                <h3>15<br><span>Connexions</span></h3>
+                <h3>2<br><span>Erreur</span></h3>
+            </div>
+            <div class="action-button">
+                <button class="btn btn-primary">Visualiser</button>
+                <button class="btn btn-secondary" (click)="onAuthenticate()">Authentififer</button>
+            </div>
+        </div>
+    </ng-container>
+</ng-container>

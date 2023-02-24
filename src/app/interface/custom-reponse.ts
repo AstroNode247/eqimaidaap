@@ -3,7 +3,7 @@ import { User } from "./user";
 
 export interface CustomResponse {
     timeStamp: Date;
-    statusCode: number;
+    statusCodes: number;
     status: string;
     reason: string;
     message: string;

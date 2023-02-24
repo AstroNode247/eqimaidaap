@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import { CustomResponse } from '../interface/custom-reponse';
+import { RecognizerResponse } from '../interface/recognizer_response';
 import { User } from '../interface/user';
 
 @Injectable({
@@ -25,11 +26,18 @@ export class UserService {
       catchError(this.handleError)
     )
 
-  user$ = (uid: number) => this.http.get<CustomResponse>(this.apiUrl + "/" + uid)
+  user$ = (uid: string) => this.http.get<CustomResponse>(this.apiUrl + "/" + uid)
     .pipe(
       tap(console.log),
       catchError(this.handleError)
     );
+
+  addFingerprint$ = (uid: string, fileName: string) => this.http.post<CustomResponse>(
+    this.apiUrl + "/" + uid + "/fingerprint", fileName)
+    .pipe(
+      tap(console.log),
+      catchError(this.handleError)
+    )
 
   delete$ = (uid: number) => this.http.delete<CustomResponse>(this.apiUrl + "/" + uid)
     .pipe(
