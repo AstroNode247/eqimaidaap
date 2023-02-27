@@ -7,7 +7,7 @@
     --color-gray: hsl(252, 15%, 65%);
     --color-primary: hsl(252, 75%, 60%);
     --color-secondary: hsl(252, 100%, 90%);
-    --color-sucess: hsl(120, 95%, 65%);
+    --color-sucess: hsl(120, 70%, 55%);
     --color-danger: hsl(0, 95%, 65%);
     --color-dark: hsl(252, 30%, 17%);
     --color-black: hsl(252, 30%, 10%);
@@ -19,6 +19,7 @@
     --search-padding: 0.6rem 1rem;
     --input-padding: 0.4rem 0.5rem;
     --card-padding: 1rem; 
+    --alert-padding: 0.1rem 0.8rem;
 
     --sticky-top-left: 5.4rem;
     --sticky-top-right: -18rem;
@@ -350,3 +351,39 @@ MEDIA QUERIES FOR SMALL LAPTOPS AND BIG TABLETS
     }
 }
 
+/* ======================= ALERT NOTIFICATION =================== */
+.notification {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    color: white;
+    padding: var(--alert-padding);
+}
+
+.notification-success {
+    background-color: var(--color-sucess);
+}
+
+.notification-danger {
+    background-color: var(--color-danger);
+}
+
+.notification p {
+    font-size: 0.9rem;
+}
+
+.notification .success {
+    font-size: 1.4rem;
+    color: var(--color-white); 
+}
+
+.notification .error {
+    font-size: 1.2rem;
+    color: var(--color-white); 
+}

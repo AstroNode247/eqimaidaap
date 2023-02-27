@@ -12,6 +12,8 @@ import { SignonComponent } from './pages/signon/signon.component';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { LoadingComponent } from './components/loading/loading.component';
+import { AlertSuccessComponent } from './components/alert/alert-success/alert-success.component';
+import { AlertErrorComponent } from './components/alert/alert-error/alert-error.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +25,8 @@ import { LoadingComponent } from './components/loading/loading.component';
     FingerprintComponent,
     SignonComponent,
     LoadingComponent,
+    AlertSuccessComponent,
+    AlertErrorComponent
   ],
   imports: [
     BrowserModule,

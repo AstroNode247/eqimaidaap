@@ -9,6 +9,7 @@ import { RecognizerResponse } from 'src/app/interface/recognizer_response';
 import { User } from 'src/app/interface/user';
 import { FingerprintService } from 'src/app/service/fingerprint.service';
 import { LoaderService } from 'src/app/service/loader.service';
+import { NotificationService } from 'src/app/service/notification.service';
 import { UserService } from 'src/app/service/user.service';
 
 @Component({
@@ -29,13 +30,14 @@ export class SignonComponent implements OnInit {
   private hasRegistered = new BehaviorSubject<boolean>(false);
   hasRegistered$ = this.hasRegistered.asObservable();
 
-  showLoader$ = this.loaderService.loadingAction$;;
+  showLoader$ = this.loaderService.loadingAction$;
 
   readonly DataState = DataState;
 
   constructor(private userService: UserService,
     private fingerprintService: FingerprintService,
-    private loaderService: LoaderService) { }
+    private loaderService: LoaderService,
+    private notificationService: NotificationService) { }
 
 
   ngOnInit(): void {
@@ -78,17 +80,20 @@ export class SignonComponent implements OnInit {
           this.loaderService.hideLoader();
           this.hasRegistered.next(true);
           this.user_info = this.user.uid;
+          this.notificationService.setSuccessMessage("Utilisateur enregistré avec succes !");
           return { dataState: DataState.LOADED, appData: this.dataSubject.value }
         }),
         startWith({ dataState: DataState.LOADED }),
         catchError((error: string) => {
           this.loaderService.hideLoader();
+          this.notificationService.setErrorMessage(error);
           return of({ dataState: DataState.ERROR, error })
         })
       )
   }
 
   onAddFingerprint() {
+    this.loaderService.showUploadLoader();
     this.fingerState$ = this.fingerprintService.upload$(this.user)
       .pipe(
         map(response => {
@@ -113,6 +118,8 @@ export class SignonComponent implements OnInit {
                 return of({ dataState: DataState.ERROR, error })
               })
             );
+          this.notificationService.setSuccessMessage('Empreinte enregistré avec succès');
+          this.loaderService.hideUploadLoader();
           return { dataState: DataState.LOADED, appData: this.recognizerSubject.value }
         }),
         startWith({ dataState: DataState.LOADED, appData: this.recognizerSubject.value }),

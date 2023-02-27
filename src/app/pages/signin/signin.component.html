@@ -1,4 +1,9 @@
-<ng-container *ngIf="(appState$ | async) && (fingerState$ | async)">
+<ng-container *ngIf="{
+    appState: appState$ | async,
+    fingerState: fingerState$ | async,
+    showLoader: showLoader$ | async,
+    hasSearched: hasSearched$ | async
+} as vm">
     <div class="form-card">
         <div class="title-card">
             <i class="uil uil-keyhole-circle"></i>
@@ -15,11 +20,11 @@
             </div>
         </form>
     </div>
-    <ng-container *ngIf="showLoader$ | async">
+    <ng-container *ngIf="vm.showLoader">
         <eq-loading></eq-loading>
     </ng-container>
 
-    <ng-container *ngIf="hasSearched$ | async">
+    <ng-container *ngIf="vm.hasSearched">
         <div class="user-card">
             <div class="header">
                 <div class="title-card">

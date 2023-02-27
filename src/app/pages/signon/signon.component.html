@@ -1,4 +1,10 @@
-<ng-container *ngIf="(appState$ | async) && (fingerState$ | async)">
+<ng-container *ngIf="
+    {
+        appState: appState$ | async,
+        fingerState: fingerState$ | async,
+        showLoader: showLoader$ | async,
+        hasRegistered: hasRegistered$ | async
+    } as vm">
     <div class="form-card">
         <div class="title-card">
             <i class="uil uil-keyhole-circle"></i>
@@ -11,19 +17,20 @@
                     [(ngModel)]="user.uid">
             </div>
             <div class="input-validation">
-                <button [disabled]="registerForm.invalid || (showLoader$ | async)" type="submit" class="btn btn-primary">
-                    <span *ngIf="showLoader$ | async">Enregistrement...</span>
-                    <span *ngIf="!(showLoader$ | async)">Inscription</span>
+                <button [disabled]="registerForm.invalid || vm.showLoader" type="submit"
+                    class="btn btn-primary">
+                    <span *ngIf="vm.showLoader">Enregistrement...</span>
+                    <span *ngIf="!vm.showLoader">Inscription</span>
                 </button>
             </div>
         </form>
     </div>
 
-    <ng-container *ngIf="showLoader$ | async">
-        <eq-loading></eq-loading>        
+    <ng-container *ngIf="vm.showLoader">
+        <eq-loading></eq-loading>
     </ng-container>
 
-    <ng-container *ngIf="hasRegistered$ | async">
+    <ng-container *ngIf="vm.hasRegistered">
         <div class="user-card">
             <div class="header">
                 <div class="title-card">

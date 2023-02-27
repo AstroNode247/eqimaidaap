@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import { CustomResponse } from '../interface/custom-reponse';
-import { RecognizerResponse } from '../interface/recognizer_response';
 import { User } from '../interface/user';
 
 @Injectable({

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { LoaderService } from 'src/app/service/loader.service';
 
 @Component({
   selector: 'eq-fingerprint',
@@ -6,5 +7,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./fingerprint.component.css']
 })
 export class FingerprintComponent {
+  constructor(private loaderService: LoaderService) { }
 
+  showLoader$ = this.loaderService.loadingUploadAction$;
 }

@@ -4,11 +4,11 @@ import { map, catchError, startWith } from 'rxjs/operators';
 import { DataState } from 'src/app/enum/data-state.enum';
 import { AppState } from 'src/app/interface/app-state';
 import { CustomResponse } from 'src/app/interface/custom-reponse';
-import { Recognizer } from 'src/app/interface/recognizer';
 import { RecognizerResponse } from 'src/app/interface/recognizer_response';
 import { User } from 'src/app/interface/user';
 import { FingerprintService } from 'src/app/service/fingerprint.service';
 import { LoaderService } from 'src/app/service/loader.service';
+import { NotificationService } from 'src/app/service/notification.service';
 import { UserService } from 'src/app/service/user.service';
 
 @Component({
@@ -31,7 +31,8 @@ export class SigninComponent implements OnInit {
 
   constructor(private userService: UserService,
     private fingerService: FingerprintService,
-    private loaderService: LoaderService) { }
+    private loaderService: LoaderService,
+    private notificationService: NotificationService) { }
 
   ngOnInit(): void {
     this.appState$ = this.userService.users$
@@ -78,10 +79,12 @@ export class SigninComponent implements OnInit {
     this.fingerState$ = this.fingerService.comparison$(this.user!)
       .pipe(
         map(response => {
+          this.notificationService.setSuccessMessage("L'utilisateur " + this.user?.uid + " identifié !");
           return { dataState: DataState.LOADED, appData: response }
         }),
         startWith({ dataState: DataState.LOADED }),
         catchError((error: string) => {
+          this.notificationService.setErrorMessage(error);
           return of({ dataState: DataState.ERROR, error })
         })
       )
