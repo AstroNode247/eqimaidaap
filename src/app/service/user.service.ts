@@ -1,9 +1,11 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
-import { tap, catchError } from 'rxjs/operators';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { tap, catchError, map } from 'rxjs/operators';
+import { DataState } from '../enum/data-state.enum';
 import { CustomResponse } from '../interface/custom-reponse';
 import { User } from '../interface/user';
+import { LoaderService } from './loader.service';
 
 @Injectable({
   providedIn: 'root'

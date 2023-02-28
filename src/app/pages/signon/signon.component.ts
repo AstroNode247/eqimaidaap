@@ -21,16 +21,17 @@ export class SignonComponent implements OnInit {
   user: User = { uid: null };
   user_info?: string | null;
   fileName?: string;
-  appState$?: Observable<AppState<CustomResponse | null>>;
+  userState$?: Observable<AppState<CustomResponse | null>>;
   fingerState$?: Observable<AppState<RecognizerResponse | null>>;
 
-  private dataSubject = new BehaviorSubject<CustomResponse | null>(null);
+  private userData = new BehaviorSubject<CustomResponse | null>(null);
   private recognizerSubject = new BehaviorSubject<RecognizerResponse | null>(null);
 
   private hasRegistered = new BehaviorSubject<boolean>(false);
   hasRegistered$ = this.hasRegistered.asObservable();
 
   showLoader$ = this.loaderService.loadingAction$;
+  showFingerprint$ = this.fingerprintService.showFingerSubject$;
 
   readonly DataState = DataState;
 
@@ -41,9 +42,10 @@ export class SignonComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.appState$ = this.userService.users$
+    this.userState$ = this.userService.users$
       .pipe(
         map(response => {
+          this.userData.next(response)
           return { dataState: DataState.LOADED, appData: response }
         }),
         startWith({ dataState: DataState.LOADING }),
@@ -61,27 +63,21 @@ export class SignonComponent implements OnInit {
           return of({ dataState: DataState.ERROR, error })
         })
       );
-
-    // this.vm$ = combineLatest([this.appState$!, this.fingerState$!, this.hasRegistered$, this.showLoader$]).pipe(
-    //   map(([appState, fingerState, hasRegistered, showLoader]) => {
-    //     return { appState, fingerState, hasRegistered, showLoader };
-    //   })
-    // )
   }
 
   registerUser() {
     this.loaderService.showLoader();
-    this.appState$ = this.userService.save$(this.user)
+    this.userState$ = this.userService.save$(this.user)
       .pipe(
         map(response => {
-          this.dataSubject.next(
-            { ...response, data: { users: [response.data.user, this.dataSubject.value?.data.users] } }
+          this.userData.next(
+            { ...response, data: { users: [response.data.user, this.userData.value?.data.users] } }
           );
           this.loaderService.hideLoader();
           this.hasRegistered.next(true);
           this.user_info = this.user.uid;
           this.notificationService.setSuccessMessage("Utilisateur enregistré avec succes !");
-          return { dataState: DataState.LOADED, appData: this.dataSubject.value }
+          return { dataState: DataState.LOADED, appData: this.userData.value }
         }),
         startWith({ dataState: DataState.LOADED }),
         catchError((error: string) => {
@@ -97,23 +93,16 @@ export class SignonComponent implements OnInit {
     this.fingerState$ = this.fingerprintService.upload$(this.user)
       .pipe(
         map(response => {
+          this.fingerprintService.showFingerprint(this.user_info!, response.name);
           this.recognizerSubject.next(
             { ...response }
           );
-          this.appState$ = this.userService.addFingerprint$(this.user.uid!, this.recognizerSubject.value?.name!)
+          this.userState$ = this.userService.addFingerprint$(this.user.uid!, this.recognizerSubject.value?.name!)
             .pipe(
               map(response => {
-                this.dataSubject.next(
-                  {
-                    ...response, data: {
-                      fingerprints: [response.data.fingerprint,
-                      this.dataSubject.value?.data.fingerprints]
-                    }
-                  }
-                );
-                return { dataState: DataState.LOADED, appData: this.dataSubject.value }
+                return { dataState: DataState.LOADED, appData: response }
               }),
-              startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
+              startWith({ dataState: DataState.LOADED, appData: response }),
               catchError((error: string) => {
                 return of({ dataState: DataState.ERROR, error })
               })

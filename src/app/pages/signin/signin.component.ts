@@ -17,10 +17,13 @@ import { UserService } from 'src/app/service/user.service';
   styleUrls: ['./signin.component.css']
 })
 export class SigninComponent implements OnInit {
-  user?: User = { uid: null};
+  user?: User = { uid: null };
   user_info?: string;
+  imageBlob?: string;
   appState$?: Observable<AppState<CustomResponse | null>>;
   fingerState$?: Observable<AppState<RecognizerResponse | null>>;
+  fingerImgState$?: Observable<string>;
+  showFingerprint$ = this.fingerService.showFingerSubject$;
 
   private hasSearched = new BehaviorSubject<boolean>(false);
   hasSearched$ = this.hasSearched.asObservable();
@@ -52,7 +55,7 @@ export class SigninComponent implements OnInit {
         }),
         startWith({ dataState: DataState.LOADING }),
         catchError((error: string) => {
-          return of ({ dataState: DataState.ERROR, error })
+          return of({ dataState: DataState.ERROR, error })
         })
       );
   }
@@ -66,7 +69,7 @@ export class SigninComponent implements OnInit {
           this.hasSearched.next(true);
           this.user = response.data.user;
           return { dataState: DataState.LOADED, appData: response }
-        }), 
+        }),
         startWith({ dataState: DataState.LOADING }),
         catchError((error: string) => {
           this.loaderService.hideLoader();
@@ -75,19 +78,31 @@ export class SigninComponent implements OnInit {
       )
   }
 
+
   onAuthenticate() {
-    this.fingerState$ = this.fingerService.comparison$(this.user!)
-      .pipe(
-        map(response => {
-          this.notificationService.setSuccessMessage("L'utilisateur " + this.user?.uid + " identifié !");
-          return { dataState: DataState.LOADED, appData: response }
-        }),
-        startWith({ dataState: DataState.LOADED }),
-        catchError((error: string) => {
-          this.notificationService.setErrorMessage(error);
-          return of({ dataState: DataState.ERROR, error })
-        })
-      )
+    this.fingerService.showDefaultFingerprint();
+    // this.fingerImgState$ = this.fingerService.showDefaultFingerprint$
+    //   .pipe(
+    //     map(response => {
+    //       return response
+    //     }),
+    //     catchError((error: string) => {
+    //       this.loaderService.hideLoader();
+    //       return of(error);
+    //     })
+    //   );
+    // this.fingerState$ = this.fingerService.comparison$(this.user!)
+    //   .pipe(
+    //     map(response => {
+    //       this.notificationService.setSuccessMessage("L'utilisateur " + this.user?.uid + " identifié !");
+    //       return { dataState: DataState.LOADED, appData: response }
+    //     }),
+    //     startWith({ dataState: DataState.LOADED }),
+    //     catchError((error: string) => {
+    //       this.notificationService.setErrorMessage(error);
+    //       return of({ dataState: DataState.ERROR, error })
+    //     })
+    //   )
   }
 
 }
