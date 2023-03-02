@@ -273,7 +273,7 @@ main .container .left {
 
 .user-card .action-button {
     display: flex;
-    justify-content: center;
+    /* justify-content: center; */
     align-items: center;
     gap: 1rem;
 }
@@ -289,7 +289,7 @@ main .container .left {
 }
 
 .user-card .header {
-    display: flex;
+    display: flex;  
     justify-content: space-between;
 }
 
@@ -303,6 +303,7 @@ main .container .left {
     font-size: 0.85rem;
     line-height: 1.5;
     text-align: center;
+    height: 1rem;
 }
 
 .right .fingerprint .user {
@@ -326,6 +327,10 @@ main .container .left {
     border-radius: var(--card-border-radius);
     overflow: hidden;
     margin: 1rem 0;
+}
+
+.fingerprint-img .img {
+    height: 15rem;
 }
 
 /* ============================================

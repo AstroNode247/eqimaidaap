@@ -14,6 +14,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { LoadingComponent } from './components/loading/loading.component';
 import { AlertSuccessComponent } from './components/alert/alert-success/alert-success.component';
 import { AlertErrorComponent } from './components/alert/alert-error/alert-error.component';
+import { SuccessMarkComponent } from './components/check-mark/success-mark/success-mark.component';
+import { FailMarkComponent } from './components/check-mark/fail-mark/fail-mark.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +28,9 @@ import { AlertErrorComponent } from './components/alert/alert-error/alert-error.
     SignonComponent,
     LoadingComponent,
     AlertSuccessComponent,
-    AlertErrorComponent
+    AlertErrorComponent,
+    SuccessMarkComponent,
+    FailMarkComponent
   ],
   imports: [
     BrowserModule,

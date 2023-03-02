@@ -6,6 +6,7 @@ import { AppState } from 'src/app/interface/app-state';
 import { CustomResponse } from 'src/app/interface/custom-reponse';
 import { RecognizerResponse } from 'src/app/interface/recognizer_response';
 import { User } from 'src/app/interface/user';
+import { CheckMarkService } from 'src/app/service/check-mark.service';
 import { FingerprintService } from 'src/app/service/fingerprint.service';
 import { LoaderService } from 'src/app/service/loader.service';
 import { NotificationService } from 'src/app/service/notification.service';
@@ -22,8 +23,6 @@ export class SigninComponent implements OnInit {
   imageBlob?: string;
   appState$?: Observable<AppState<CustomResponse | null>>;
   fingerState$?: Observable<AppState<RecognizerResponse | null>>;
-  fingerImgState$?: Observable<string>;
-  showFingerprint$ = this.fingerService.showFingerSubject$;
 
   private hasSearched = new BehaviorSubject<boolean>(false);
   hasSearched$ = this.hasSearched.asObservable();
@@ -35,7 +34,8 @@ export class SigninComponent implements OnInit {
   constructor(private userService: UserService,
     private fingerService: FingerprintService,
     private loaderService: LoaderService,
-    private notificationService: NotificationService) { }
+    private notificationService: NotificationService,
+    private checkMarService: CheckMarkService) { }
 
   ngOnInit(): void {
     this.appState$ = this.userService.users$
@@ -78,31 +78,24 @@ export class SigninComponent implements OnInit {
       )
   }
 
-
   onAuthenticate() {
-    this.fingerService.showDefaultFingerprint();
-    // this.fingerImgState$ = this.fingerService.showDefaultFingerprint$
-    //   .pipe(
-    //     map(response => {
-    //       return response
-    //     }),
-    //     catchError((error: string) => {
-    //       this.loaderService.hideLoader();
-    //       return of(error);
-    //     })
-    //   );
-    // this.fingerState$ = this.fingerService.comparison$(this.user!)
-    //   .pipe(
-    //     map(response => {
-    //       this.notificationService.setSuccessMessage("L'utilisateur " + this.user?.uid + " identifié !");
-    //       return { dataState: DataState.LOADED, appData: response }
-    //     }),
-    //     startWith({ dataState: DataState.LOADED }),
-    //     catchError((error: string) => {
-    //       this.notificationService.setErrorMessage(error);
-    //       return of({ dataState: DataState.ERROR, error })
-    //     })
-    //   )
+    this.loaderService.showUploadLoader();
+
+    this.fingerState$ = this.fingerService.comparison$(this.user!)
+      .pipe(
+        map(response => {
+          this.loaderService.hideUploadLoader();
+          this.checkMarService.showSuccess();
+          return { dataState: DataState.LOADED, appData: response }
+        }),
+        startWith({ dataState: DataState.LOADED }),
+        catchError((error: string) => {
+          this.notificationService.setErrorMessage(error);
+          this.loaderService.hideUploadLoader();
+          this.checkMarService.showSuccess();
+          return of({ dataState: DataState.ERROR, error })
+        })
+      )
   }
 
 }

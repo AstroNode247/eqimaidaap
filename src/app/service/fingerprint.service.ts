@@ -1,8 +1,8 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { tap, catchError } from 'rxjs/operators';
+import { tap, catchError, scan, switchMap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Recognizer } from '../interface/recognizer';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, merge, Observable, Subject, throwError } from 'rxjs';
 import { RecognizerResponse } from '../interface/recognizer_response';
 import { User } from '../interface/user';
 
@@ -12,9 +12,28 @@ import { User } from '../interface/user';
 export class FingerprintService {
   private readonly apiUrl = "http://127.0.0.1:5000/";
   private showFingerSubject = new BehaviorSubject<string>('');
+  private reloadSubject = new Subject<void>();
   showFingerSubject$ = this.showFingerSubject.asObservable();
 
   constructor(private http: HttpClient) { }
+
+
+  fingerObs$ = merge(
+    this.showFingerSubject,
+    this.reloadSubject
+  ).pipe(
+    scan((oldValue, currentValue) => {
+      if(!oldValue && !currentValue) {
+        throw new Error(`Reload can't run before initial load`);
+      }
+      return currentValue || oldValue;
+    }),
+    tap(console.log)
+  )
+
+  reload(): void {
+    this.reloadSubject.next();
+  }
 
   showFingerprint(userName: string, fileName: string) {
     this.showFingerSubject.next(this.apiUrl + "/v1/fingerprint/" + userName + "/" + fileName);
@@ -22,6 +41,10 @@ export class FingerprintService {
 
   showDefaultFingerprint() {
     this.showFingerSubject.next(this.apiUrl + "/v1/fingerprint");
+  }
+
+  hideFingerprint() {
+    this.showFingerSubject.next('');
   }
 
   showDefaultFingerprint$ = this.http.get(this.apiUrl + 'v1/fingerprint', { responseType: 'blob' })

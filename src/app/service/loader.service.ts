@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { CheckMarkService } from './check-mark.service';
+import { FingerprintService } from './fingerprint.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +13,9 @@ export class LoaderService {
   private loadingUploadSubject = new BehaviorSubject<boolean>(false);
   loadingUploadAction$ = this.loadingUploadSubject.asObservable();
 
+  constructor(private checkMarkService: CheckMarkService,
+    private fingerprintService: FingerprintService) { }
+
   showLoader() {
     this.loadingSubject.next(true);
   }
@@ -20,6 +25,8 @@ export class LoaderService {
   }
 
   showUploadLoader() {
+    this.checkMarkService.hideAll();
+    this.fingerprintService.hideFingerprint();
     this.loadingUploadSubject.next(true);
   }
 

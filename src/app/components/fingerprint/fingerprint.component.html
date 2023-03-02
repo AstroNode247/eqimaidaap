@@ -1,15 +1,21 @@
 <div class="user-card">
     <div class="header">
         <div class="title-card">
-            <i class="uil uil-user-circle"></i>
-            <h2>1078008</h2>
+            <i class="uil uil-image"></i>
+            <h2>Illustration</h2>
         </div>
     </div>
-    <div class="fingerprint-img" *ngIf="showFingerprint$ | async as showFingerprint">
-        <img 
-         [src]="showFingerprint" alt="Fingerprint image">
+    <div class="fingerprint-img" *ngIf="!(showFingerprint$ | async) && (showSuccess$ | async)">
+        <eq-success-mark></eq-success-mark>
     </div>
-    <div class="action-button">
-        <button class="btn btn-primary">Confirmer</button>
+    <div class="fingerprint-img" *ngIf="(showFingerprint$ | async) as showFingerprint">
+        <img *ngIf="showFingerprint" class="img" [src]="showFingerprint" alt="Fingerprint image">
+    </div>
+    <div class="fingerprint-img" *ngIf="!(showLoader$ | async) && !(showFingerprint$ | async) 
+        && !(showSuccess$ | async)">
+        <img class="img" src="assets\img\fingerprint-scan.png" alt="Fingerprint image">
+    </div>
+    <div class="fingerprint-img" *ngIf="(showLoader$ | async) && !(showFingerprint$ | async) as showLoader">
+        <eq-loading></eq-loading>
     </div>
 </div>
