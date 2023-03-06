@@ -56,6 +56,6 @@ export class UserService {
 
   private handleError(error: HttpErrorResponse): Observable<never> {
     console.log(error)
-    return throwError(() => 'An error occured - Error code : ' + error.status);
+    return throwError(() => error.error.message);
   }
 }

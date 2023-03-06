@@ -74,6 +74,7 @@ export class SigninComponent implements OnInit {
         catchError((error: string) => {
           this.loaderService.hideLoader();
           console.log(error);
+          this.notificationService.setErrorMessage(error);
           return of({ dataState: DataState.ERROR, error })
         })
       )
