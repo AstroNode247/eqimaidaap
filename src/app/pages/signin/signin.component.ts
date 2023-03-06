@@ -4,7 +4,7 @@ import { map, catchError, startWith } from 'rxjs/operators';
 import { DataState } from 'src/app/enum/data-state.enum';
 import { AppState } from 'src/app/interface/app-state';
 import { CustomResponse } from 'src/app/interface/custom-reponse';
-import { RecognizerResponse } from 'src/app/interface/recognizer_response';
+import { RecognizerError, RecognizerResponse } from 'src/app/interface/recognizer-response';
 import { User } from 'src/app/interface/user';
 import { CheckMarkService } from 'src/app/service/check-mark.service';
 import { FingerprintService } from 'src/app/service/fingerprint.service';
@@ -73,6 +73,7 @@ export class SigninComponent implements OnInit {
         startWith({ dataState: DataState.LOADING }),
         catchError((error: string) => {
           this.loaderService.hideLoader();
+          console.log(error);
           return of({ dataState: DataState.ERROR, error })
         })
       )
@@ -91,12 +92,16 @@ export class SigninComponent implements OnInit {
           return { dataState: DataState.LOADED, appData: response }
         }),
         startWith({ dataState: DataState.LOADED }),
-        catchError((error: string) => {
+        catchError((error: RecognizerError) => {
           this.fingerService.setResponse(null);
-          this.notificationService.setErrorMessage(error);
+          this.notificationService.setErrorMessage(error.message!);
           this.loaderService.hideUploadLoader();
           this.checkMarkService.showFail();
-          return of({ dataState: DataState.ERROR, error })
+          this.fingerService.setResponse({
+            distance: error.distance,
+            quality: error.quality
+          });
+          return of({ dataState: DataState.ERROR, error: error.description! })
         })
       )
   }

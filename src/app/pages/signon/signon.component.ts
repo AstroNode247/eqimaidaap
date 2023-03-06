@@ -4,9 +4,9 @@ import { catchError, map, startWith } from 'rxjs/operators';
 import { DataState } from 'src/app/enum/data-state.enum';
 import { AppState } from 'src/app/interface/app-state';
 import { CustomResponse } from 'src/app/interface/custom-reponse';
-import { Recognizer } from 'src/app/interface/recognizer';
-import { RecognizerResponse } from 'src/app/interface/recognizer_response';
+import { RecognizerError, RecognizerResponse } from 'src/app/interface/recognizer-response';
 import { User } from 'src/app/interface/user';
+import { CheckMarkService } from 'src/app/service/check-mark.service';
 import { FingerprintService } from 'src/app/service/fingerprint.service';
 import { LoaderService } from 'src/app/service/loader.service';
 import { NotificationService } from 'src/app/service/notification.service';
@@ -21,7 +21,7 @@ export class SignonComponent implements OnInit {
   user: User = { uid: null };
   user_info?: string | null;
   fileName?: string;
-  userState$?: Observable<AppState<CustomResponse | null>>;
+  userState$?: Observable<AppState<CustomResponse | null >>;
   fingerState$?: Observable<AppState<RecognizerResponse | null>>;
 
   private userData = new BehaviorSubject<CustomResponse | null>(null);
@@ -38,7 +38,8 @@ export class SignonComponent implements OnInit {
   constructor(private userService: UserService,
     private fingerprintService: FingerprintService,
     private loaderService: LoaderService,
-    private notificationService: NotificationService) { }
+    private notificationService: NotificationService,
+    private checkMarkService: CheckMarkService) { }
 
 
   ngOnInit(): void {
@@ -113,9 +114,12 @@ export class SignonComponent implements OnInit {
           return { dataState: DataState.LOADED, appData: this.recognizerSubject.value }
         }),
         startWith({ dataState: DataState.LOADED, appData: this.recognizerSubject.value }),
-        catchError((error: string) => {
+        catchError((error: RecognizerError) => {
           this.fingerprintService.setResponse(null);
-          return of({ dataState: DataState.ERROR, error });
+          this.loaderService.hideUploadLoader();
+          this.notificationService.setErrorMessage(error.message!);
+          this.checkMarkService.showFail();
+          return of({ dataState: DataState.ERROR, error: error.description! });
         })
       );
   }

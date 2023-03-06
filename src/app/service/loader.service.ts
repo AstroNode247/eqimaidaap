@@ -27,6 +27,7 @@ export class LoaderService {
   showUploadLoader() {
     this.checkMarkService.hideAll();
     this.fingerprintService.hideFingerprint();
+    this.fingerprintService.setResponse(null);
     this.loadingUploadSubject.next(true);
   }
 

@@ -3,7 +3,7 @@ import { tap, catchError, scan, switchMap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Recognizer } from '../interface/recognizer';
 import { BehaviorSubject, merge, Observable, Subject, throwError } from 'rxjs';
-import { RecognizerResponse } from '../interface/recognizer_response';
+import { RecognizerResponse } from '../interface/recognizer-response';
 import { User } from '../interface/user';
 
 @Injectable({
@@ -63,11 +63,6 @@ export class FingerprintService {
       catchError(this.handleError)
     )
 
-    handleError(error: HttpErrorResponse): Observable<never> {
-      console.log(error)
-      throw throwError(() => 'An error occured - Error code : ' + error.status)
-    }
-
   version$ = this.http.get<Recognizer>("http://127.0.0.1:5000/version")
     .pipe(
       tap(console.log),
@@ -79,4 +74,9 @@ export class FingerprintService {
       tap(console.log),
       catchError(this.handleError)
     )
+
+  private handleError(error: HttpErrorResponse): Observable<never> {
+      console.log(error)
+      return throwError(() => error.error)
+    }
 }

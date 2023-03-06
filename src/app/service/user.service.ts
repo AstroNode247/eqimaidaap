@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { tap, catchError, map } from 'rxjs/operators';
 import { DataState } from '../enum/data-state.enum';
 import { CustomResponse } from '../interface/custom-reponse';
+import { RecognizerError } from '../interface/recognizer-response';
 import { User } from '../interface/user';
 import { LoaderService } from './loader.service';
 

@@ -22,7 +22,7 @@ export class HeaderComponent {
       if (message) {
         setTimeout(() => {
           this.notificationService.clearAllMessage()
-        }, 2000);
+        }, 4000);
       }
     })
   );
