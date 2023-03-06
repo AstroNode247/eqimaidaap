@@ -13,6 +13,7 @@ export class FingerprintComponent {
   showSuccess$ = this.checkMarkService.successAction$;
   showFail$ = this.checkMarkService.failAction$;
   showFingerprint$ = this.fingerprintService.showFingerSubject$;
+  response$ = this.fingerprintService.responseAction$;
 
   constructor(private loaderService: LoaderService,
     private checkMarkService: CheckMarkService,

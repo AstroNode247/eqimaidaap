@@ -93,6 +93,7 @@ export class SignonComponent implements OnInit {
     this.fingerState$ = this.fingerprintService.upload$(this.user)
       .pipe(
         map(response => {
+          this.fingerprintService.setResponse(response);
           this.fingerprintService.showFingerprint(this.user_info!, response.name);
           this.recognizerSubject.next(
             { ...response }
@@ -113,6 +114,7 @@ export class SignonComponent implements OnInit {
         }),
         startWith({ dataState: DataState.LOADED, appData: this.recognizerSubject.value }),
         catchError((error: string) => {
+          this.fingerprintService.setResponse(null);
           return of({ dataState: DataState.ERROR, error });
         })
       );

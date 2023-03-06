@@ -212,7 +212,7 @@ main .container .left {
 }
 
 .left .sidebar .menu-item:last-child.active {
-    border-top-left-radius: var(--card-border-radius);
+    border-bottom-left-radius: var(--card-border-radius);
     overflow: hidden;
 }
 
@@ -303,7 +303,6 @@ main .container .left {
     font-size: 0.85rem;
     line-height: 1.5;
     text-align: center;
-    height: 1rem;
 }
 
 .right .fingerprint .user {

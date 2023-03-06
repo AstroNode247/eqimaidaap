@@ -1,21 +1,28 @@
 <div class="user-card">
     <div class="header">
         <div class="title-card">
-            <i class="uil uil-image"></i>
-            <h2>Illustration</h2>
+            <i class="uil uil-airplay"></i>
+            <h2>Résultat</h2>
         </div>
     </div>
     <div class="fingerprint-img" *ngIf="!(showFingerprint$ | async) && (showSuccess$ | async)">
         <eq-success-mark></eq-success-mark>
     </div>
+    <div class="fingerprint-img" *ngIf="!(showFingerprint$ | async) && (showFail$ | async)">
+        <eq-fail-mark></eq-fail-mark>
+    </div>
     <div class="fingerprint-img" *ngIf="(showFingerprint$ | async) as showFingerprint">
         <img *ngIf="showFingerprint" class="img" [src]="showFingerprint" alt="Fingerprint image">
     </div>
     <div class="fingerprint-img" *ngIf="!(showLoader$ | async) && !(showFingerprint$ | async) 
-        && !(showSuccess$ | async)">
+        && !(showSuccess$ | async) && !(showFail$ | async)">
         <img class="img" src="assets\img\fingerprint-scan.png" alt="Fingerprint image">
     </div>
     <div class="fingerprint-img" *ngIf="(showLoader$ | async) && !(showFingerprint$ | async) as showLoader">
         <eq-loading></eq-loading>
     </div>
+    <ng-container *ngIf="response$ | async as response">
+        <p *ngIf="response.distance">Indice de ressemblance - {{response.distance | number:'1.1-3'}}</p>
+        <p *ngIf="response.quality">Qualité - {{response.quality}}</p>
+    </ng-container>
 </div>

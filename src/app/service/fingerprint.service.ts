@@ -12,11 +12,16 @@ import { User } from '../interface/user';
 export class FingerprintService {
   private readonly apiUrl = "http://127.0.0.1:5000/";
   private showFingerSubject = new BehaviorSubject<string>('');
+  private responseSubject? = new BehaviorSubject<RecognizerResponse | null>(null); 
+  responseAction$ = this.responseSubject?.asObservable();
   private reloadSubject = new Subject<void>();
   showFingerSubject$ = this.showFingerSubject.asObservable();
 
   constructor(private http: HttpClient) { }
 
+  setResponse(response?: RecognizerResponse | null) {
+    this.responseSubject?.next(response!);
+  }
 
   fingerObs$ = merge(
     this.showFingerSubject,

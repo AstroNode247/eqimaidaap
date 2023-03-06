@@ -35,7 +35,7 @@ export class SigninComponent implements OnInit {
     private fingerService: FingerprintService,
     private loaderService: LoaderService,
     private notificationService: NotificationService,
-    private checkMarService: CheckMarkService) { }
+    private checkMarkService: CheckMarkService) { }
 
   ngOnInit(): void {
     this.appState$ = this.userService.users$
@@ -84,15 +84,18 @@ export class SigninComponent implements OnInit {
     this.fingerState$ = this.fingerService.comparison$(this.user!)
       .pipe(
         map(response => {
+          this.fingerService.setResponse(null);
           this.loaderService.hideUploadLoader();
-          this.checkMarService.showSuccess();
+          this.checkMarkService.showSuccess();
+          this.fingerService.setResponse(response);
           return { dataState: DataState.LOADED, appData: response }
         }),
         startWith({ dataState: DataState.LOADED }),
         catchError((error: string) => {
+          this.fingerService.setResponse(null);
           this.notificationService.setErrorMessage(error);
           this.loaderService.hideUploadLoader();
-          this.checkMarService.showSuccess();
+          this.checkMarkService.showFail();
           return of({ dataState: DataState.ERROR, error })
         })
       )
