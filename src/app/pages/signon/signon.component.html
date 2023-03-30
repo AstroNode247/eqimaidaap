@@ -3,7 +3,8 @@
         appState: userState$ | async,
         fingerState: fingerState$ | async,
         showLoader: showLoader$ | async,
-        hasRegistered: hasRegistered$ | async
+        hasRegistered: hasRegistered$ | async,
+        hasSignOn: hasSignOn$ | async
     } as vm">
     <div class="form-card">
         <div class="title-card">
@@ -17,7 +18,8 @@
                     [(ngModel)]="user.uid">
             </div>
             <div class="input-validation">
-                <button [disabled]="registerForm.invalid || vm.showLoader" type="submit"
+                <button [disabled]="registerForm.invalid || vm.showLoader ||
+                 (vm.hasRegistered && !vm.hasSignOn)" type="submit"
                     class="btn btn-primary">
                     <span *ngIf="vm.showLoader">Enregistrement...</span>
                     <span *ngIf="!vm.showLoader">Inscription</span>
@@ -44,7 +46,8 @@
             <p>Utiliser le logiciel <b>Eqimaid</b> pour que le système capture l'empreinte.
                 Le système numérisera ensuite votre empreinte et enregistrera les données.</p>
                 <div class="action-button">
-                    <button class="btn btn-primary" (click)="onAddFingerprint()">Ajouter</button>
+                    <button class="btn btn-primary" (click)="onAddFingerprint()"
+                    [disabled]="vm.hasSignOn">Ajouter</button>
                 </div>
         </div>
     </ng-container>

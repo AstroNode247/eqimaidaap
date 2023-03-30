@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
 import { catchError, map, startWith } from 'rxjs/operators';
+import { ActionState } from 'src/app/enum/action-state.enum';
 import { DataState } from 'src/app/enum/data-state.enum';
 import { AppState } from 'src/app/interface/app-state';
 import { CustomResponse } from 'src/app/interface/custom-reponse';
@@ -21,7 +22,7 @@ export class SignonComponent implements OnInit {
   user: User = { uid: null };
   user_info?: string | null;
   fileName?: string;
-  userState$?: Observable<AppState<CustomResponse | null >>;
+  userState$?: Observable<AppState<CustomResponse | null>>;
   fingerState$?: Observable<AppState<RecognizerResponse | null>>;
 
   private userData = new BehaviorSubject<CustomResponse | null>(null);
@@ -32,8 +33,11 @@ export class SignonComponent implements OnInit {
 
   showLoader$ = this.loaderService.loadingAction$;
   showFingerprint$ = this.fingerprintService.showFingerSubject$;
+  showCount$ = this.fingerprintService.fingerCountAction$;
+  hasSignOn$ = this.fingerprintService.isSignOnAction$;
 
   readonly DataState = DataState;
+  fingerCount = 1;
 
   constructor(private userService: UserService,
     private fingerprintService: FingerprintService,
@@ -43,31 +47,34 @@ export class SignonComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.fingerCount = 1;
     this.userState$ = this.userService.users$
       .pipe(
         map(response => {
           this.userData.next(response)
-          return { dataState: DataState.LOADED, appData: response }
+          return { dataState: DataState.LOADED, actionState: ActionState.SIGNON, appData: response }
         }),
-        startWith({ dataState: DataState.LOADING }),
+        startWith({ dataState: DataState.LOADING, actionState: ActionState.SIGNON }),
         catchError((error: string) => {
-          return of({ dataState: DataState.ERROR, error })
+          return of({ dataState: DataState.ERROR, actionState: ActionState.SIGNON, error })
         })
       )
     this.fingerState$ = this.fingerprintService.version$
       .pipe(
         map(response => {
-          return { dataState: DataState.LOADED, appData: response }
+          return { dataState: DataState.LOADED, actionState: ActionState.SIGNON, appData: response }
         }),
-        startWith({ dataState: DataState.LOADING }),
+        startWith({ dataState: DataState.LOADING, actionState: ActionState.SIGNON }),
         catchError((error: string) => {
-          return of({ dataState: DataState.ERROR, error })
+          return of({ dataState: DataState.ERROR, actionState: ActionState.SIGNON, error })
         })
       );
   }
 
   registerUser() {
     this.loaderService.showLoader();
+    this.fingerprintService.signOnAction();
+    this.notificationService.clearAllMessage();
     this.userState$ = this.userService.save$(this.user)
       .pipe(
         map(response => {
@@ -78,19 +85,29 @@ export class SignonComponent implements OnInit {
           this.hasRegistered.next(true);
           this.user_info = this.user.uid;
           this.notificationService.setSuccessMessage("Utilisateur enregistré avec succes !");
-          return { dataState: DataState.LOADED, appData: this.userData.value }
+          this.fingerprintService.setFingerCount(0);
+          this.fingerCount = 1;
+          this.fingerprintService.initSignOn();
+          return {
+            dataState: DataState.LOADED, actionState: ActionState.SIGNON,
+            appData: this.userData.value
+          }
         }),
-        startWith({ dataState: DataState.LOADED }),
+        startWith({
+          dataState: DataState.LOADED,
+          actionState: ActionState.SIGNON
+        }),
         catchError((error: string) => {
           this.loaderService.hideLoader();
           this.notificationService.setErrorMessage(error);
-          return of({ dataState: DataState.ERROR, error })
+          return of({ dataState: DataState.ERROR, actionState: ActionState.SIGNON, error })
         })
       )
   }
 
   onAddFingerprint() {
     this.loaderService.showUploadLoader();
+    this.notificationService.clearAllMessage();
     this.fingerState$ = this.fingerprintService.upload$(this.user)
       .pipe(
         map(response => {
@@ -102,24 +119,26 @@ export class SignonComponent implements OnInit {
           this.userState$ = this.userService.addFingerprint$(this.user.uid!, this.recognizerSubject.value?.name!)
             .pipe(
               map(response => {
-                return { dataState: DataState.LOADED, appData: response }
+                return { dataState: DataState.LOADED, actionState: ActionState.SIGNON, appData: response }
               }),
-              startWith({ dataState: DataState.LOADED, appData: response }),
+              startWith({ dataState: DataState.LOADED, actionState: ActionState.SIGNON, appData: response }),
               catchError((error: string) => {
-                return of({ dataState: DataState.ERROR, error })
+                return of({ dataState: DataState.ERROR, actionState: ActionState.SIGNON, error })
               })
             );
+          this.fingerprintService.setFingerCount(this.fingerCount++);
           this.notificationService.setSuccessMessage('Empreinte enregistré avec succès');
           this.loaderService.hideUploadLoader();
-          return { dataState: DataState.LOADED, appData: this.recognizerSubject.value }
+          this.fingerprintService.isSignOn();
+          return { dataState: DataState.LOADED, actionState: ActionState.SIGNON, appData: this.recognizerSubject.value }
         }),
-        startWith({ dataState: DataState.LOADED, appData: this.recognizerSubject.value }),
+        startWith({ dataState: DataState.LOADED, actionState: ActionState.SIGNON, appData: this.recognizerSubject.value }),
         catchError((error: RecognizerError) => {
           this.fingerprintService.setResponse(null);
           this.loaderService.hideUploadLoader();
           this.notificationService.setErrorMessage(error.message!);
           this.checkMarkService.showFail();
-          return of({ dataState: DataState.ERROR, error: error.description! });
+          return of({ dataState: DataState.ERROR, actionState: ActionState.SIGNON, error: error.description! });
         })
       );
   }

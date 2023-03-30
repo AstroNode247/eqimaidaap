@@ -12,12 +12,10 @@ export class NotificationService {
     errorMessageAction$ = this.errorMessageSubject.asObservable();    
 
     setSuccessMessage(message: string) {
-        // this.clearAllMessage()
         this.successMessageSubject.next(message);
     }
 
     setErrorMessage(message: string) {
-        // this.clearAllMessage();
         this.errorMessageSubject.next(message);
     }
 

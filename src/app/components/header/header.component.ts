@@ -13,19 +13,11 @@ export class HeaderComponent {
       if (message) {
         setTimeout(() => {
           this.notificationService.clearAllMessage()
-        }, 2000);
+        }, 5000);
       }
     })
   );
-  errorMessage$ = this.notificationService.errorMessageAction$.pipe(
-    tap((message) => {
-      if (message) {
-        setTimeout(() => {
-          this.notificationService.clearAllMessage()
-        }, 4000);
-      }
-    })
-  );
+  errorMessage$ = this.notificationService.errorMessageAction$;
 
   constructor(private notificationService: NotificationService) { }
 }

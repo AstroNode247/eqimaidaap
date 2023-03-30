@@ -23,6 +23,12 @@
     </div>
     <ng-container *ngIf="response$ | async as response">
         <p *ngIf="response.distance">Indice de ressemblance - {{response.distance | number:'1.1-3'}}</p>
+        <p *ngIf="response.score">Indice de ressemblance - {{response.score | number:'1.1-3'}}</p>   
         <p *ngIf="response.quality">Qualité - {{response.quality}}</p>
+    </ng-container>
+    <ng-container *ngIf="{ 
+        counter: showCounter$ | async,
+        action: actionState$ | async } as vm">
+        <p *ngIf="(vm.action == ActionState.SIGNON) && (vm.counter != 0)">{{vm.counter}} sur 5 empreintes</p>
     </ng-container>
 </div>

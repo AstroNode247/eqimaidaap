@@ -6,16 +6,16 @@
         <div *ngIf="successMessage$ | async as successMessage" class="notification notification-success">
             <i class="uil uil-check success"></i>
             <p>{{successMessage}}</p>
-            <div class="close">
+            <!-- <div class="close">
                 <i class="uil uil-multiply"></i>
-            </div>
+            </div> -->
         </div>
         <div *ngIf="errorMessage$ | async as errorMessage" class="notification notification-danger">
             <i class="uil uil-exclamation-triangle error"></i>
             <p>{{errorMessage}}</p>
-            <div class="close">
+            <!-- <div class="close">
                 <i class="uil uil-multiply"></i>
-            </div>
+            </div> -->
         </div>
         <div class="account">
             <button class="btn btn-primary profile-info">
